@@ -6,3 +6,4 @@ python-multipart
 pydantic
 python-docx
 pdfplumber
+pypdf
