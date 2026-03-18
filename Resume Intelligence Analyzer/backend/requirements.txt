@@ -7,3 +7,4 @@ pydantic
 python-docx
 pdfplumber
 pypdf
+spacy
