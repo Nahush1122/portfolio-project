@@ -1,7 +1,1 @@
 python-3.11.9
-fastapi
-uvicorn[standard]
-pandas
-numpy
-python-multipart
-pydantic
