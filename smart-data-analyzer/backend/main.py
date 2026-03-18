@@ -1,6 +1,6 @@
-from fastapi.middleware.cors import CORSMiddleware
 from __future__ import annotations
 
+from fastapi.middleware.cors import CORSMiddleware
 from io import StringIO
 import os
 from typing import Any
