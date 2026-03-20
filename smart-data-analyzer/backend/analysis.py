@@ -23,7 +23,7 @@ def preview_dataset(df: pd.DataFrame, limit: int = 10) -> dict[str, Any]:
     preview = (
         df.head(limit)
         .replace({np.nan: None})
-        .applymap(sanitize_value)
+        .apply(lambda col: col.map(sanitize_value))
     )
     return {
         "columns": df.columns.tolist(),
