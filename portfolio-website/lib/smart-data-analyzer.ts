@@ -42,6 +42,7 @@ export type CorrelationPoint = {
 };
 
 export type AnalysisResponse = {
+  preview?: DatasetPreview;
   shape: {
     rows: number;
     columns: number;
@@ -118,12 +119,16 @@ export async function visualizeDataset(
 }
 
 async function requestJson<T>(path: string, init: RequestInit): Promise<T> {
+  if (!SMART_DATA_ANALYZER_API_BASE_URL) {
+    throw new Error("API URL not configured");
+  }
+
   let response: Response;
 
   try {
     response = await fetch(`${SMART_DATA_ANALYZER_API_BASE_URL}${path}`, init);
   } catch {
-    throw new Error("Server unavailable");
+    throw new Error("Server not responding");
   }
 
   if (!response.ok) {
@@ -135,7 +140,7 @@ async function requestJson<T>(path: string, init: RequestInit): Promise<T> {
 
 async function getErrorMessage(response: Response) {
   if (response.status >= 500) {
-    return "Server unavailable";
+    return "Server not responding";
   }
 
   try {

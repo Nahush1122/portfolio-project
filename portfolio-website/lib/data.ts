@@ -163,7 +163,7 @@ export const projects: Project[] = [
       "One-click summary generation for stakeholder sharing",
       "Time-series and segment comparison visual outputs",
     ],
-    codeUrl: "https://github.com/yourusername/smart-data-analyzer",
+    codeUrl: "https://github.com/Nahush1122/portfolio-project/tree/main/smart-data-analyzer",
     impactData: [
       { phase: "Upload", score: 30 },
       { phase: "Profiling", score: 58 },
@@ -193,7 +193,7 @@ export const projects: Project[] = [
       "Entity extraction for compliance and auditing workflows",
       "Executive summaries with source-aware evidence blocks",
     ],
-    codeUrl: "https://github.com/yourusername/ai-pdf-intelligence-system",
+    codeUrl: "https://github.com/Nahush1122/portfolio-project/tree/main/PDF%20Intelligence%20System",
     impactData: [
       { phase: "Parsing", score: 34 },
       { phase: "Chunking", score: 55 },
@@ -223,7 +223,7 @@ export const projects: Project[] = [
       "Candidate skill heatmaps and gap analysis",
       "Exportable shortlist summaries for recruiting teams",
     ],
-    codeUrl: "https://github.com/yourusername/resume-analyzer",
+    codeUrl: "https://github.com/Nahush1122/portfolio-project/tree/main/Resume%20Intelligence%20Analyzer",
     impactData: [
       { phase: "Parsing", score: 29 },
       { phase: "Extraction", score: 61 },

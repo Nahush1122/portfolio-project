@@ -40,10 +40,15 @@ export function SmartDataAnalyzerDashboard() {
       void (async () => {
         try {
           const upload = await uploadDataset(selectedFile);
-          const [analysis, visualizations] = await Promise.all([
+          const [analysisResult, visualizations] = await Promise.all([
             analyzeDataset(upload.dataset_id),
             visualizeDataset(upload.dataset_id),
           ]);
+
+          const analysis = {
+            ...analysisResult,
+            preview: analysisResult.preview ?? upload.preview,
+          };
 
           setDashboardState({
             datasetId: upload.dataset_id,
@@ -153,18 +158,24 @@ export function SmartDataAnalyzerDashboard() {
             <MetricCard label="Dataset" value={dashboardState.filename} hint="Uploaded CSV" />
             <MetricCard
               label="Rows"
-              value={dashboardState.analysis.shape.rows.toLocaleString()}
+              value={
+                dashboardState.analysis?.preview?.shape?.rows?.toLocaleString() ||
+                "0"
+              }
               hint="Parsed successfully"
               tone="success"
             />
             <MetricCard
               label="Columns"
-              value={dashboardState.analysis.shape.columns.toString()}
+              value={
+                dashboardState.analysis?.preview?.shape?.columns?.toString() ||
+                "0"
+              }
               hint="Detected fields"
             />
             <MetricCard
               label="Insights"
-              value={dashboardState.analysis.insights.length.toString()}
+              value={dashboardState.analysis?.insights?.length?.toString() || "0"}
               hint="Generated automatically"
               tone="warning"
             />
@@ -180,7 +191,8 @@ export function SmartDataAnalyzerDashboard() {
                 <h3 className="mt-3 text-2xl font-semibold text-white">First rows</h3>
               </div>
               <p className="text-sm text-slate-400">
-                Shape: {dashboardState.preview.shape.rows} x {dashboardState.preview.shape.columns}
+                Shape: {dashboardState.analysis?.preview?.shape?.rows || "0"} x{" "}
+                {dashboardState.analysis?.preview?.shape?.columns || "0"}
               </p>
             </div>
 
@@ -219,7 +231,7 @@ export function SmartDataAnalyzerDashboard() {
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/80">
                 Summary Statistics
               </p>
-              {dashboardState.analysis.summary_statistics.length ? (
+              {dashboardState.analysis?.summary_statistics?.length ? (
                 <div className="mt-5 overflow-x-auto">
                   <table className="min-w-full border-separate border-spacing-y-2 text-left text-sm">
                     <thead>
@@ -232,7 +244,7 @@ export function SmartDataAnalyzerDashboard() {
                       </tr>
                     </thead>
                     <tbody>
-                      {dashboardState.analysis.summary_statistics.map((record) => (
+                      {dashboardState.analysis?.summary_statistics?.map((record) => (
                         <tr key={record.column}>
                           <td className="rounded-[14px] border border-white/8 bg-white/5 px-3 py-3 text-white">
                             {record.column}
@@ -253,12 +265,12 @@ export function SmartDataAnalyzerDashboard() {
                             {formatNumber(record.max)}
                           </td>
                         </tr>
-                      ))}
+                      )) || null}
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <EmptyState message="No numeric columns were available for summary statistics." />
+                <EmptyState message="Summary statistics not available" />
               )}
             </div>
 
@@ -268,7 +280,7 @@ export function SmartDataAnalyzerDashboard() {
                   Missing Values
                 </p>
                 <div className="mt-5 space-y-3">
-                  {dashboardState.analysis.missing_values.map((item) => (
+                  {dashboardState.analysis?.missing_values?.map((item) => (
                     <div
                       key={item.column}
                       className="rounded-[20px] border border-white/10 bg-white/5 px-4 py-3"
@@ -280,7 +292,7 @@ export function SmartDataAnalyzerDashboard() {
                         </p>
                       </div>
                     </div>
-                  ))}
+                  )) || <p className="text-sm text-slate-400">Missing values not available</p>}
                 </div>
               </div>
 
@@ -289,14 +301,14 @@ export function SmartDataAnalyzerDashboard() {
                   Correlation Insights
                 </p>
                 <div className="mt-5 space-y-3">
-                  {dashboardState.analysis.insights.map((insight) => (
+                  {dashboardState.analysis?.insights?.map((insight) => (
                     <div
                       key={insight}
                       className="rounded-[20px] border border-cyan-300/12 bg-cyan-300/10 px-4 py-3 text-sm leading-7 text-slate-100"
                     >
                       {insight}
                     </div>
-                  ))}
+                  )) || <p className="text-sm text-slate-400">Insights not available</p>}
                 </div>
               </div>
             </div>
@@ -304,20 +316,20 @@ export function SmartDataAnalyzerDashboard() {
 
           {/* Chart section */}
           <section className="grid gap-4">
-            {dashboardState.visualizations.histograms.length ? (
+            {dashboardState.visualizations?.histograms?.length ? (
               <div className="grid gap-4 lg:grid-cols-2">
-                {dashboardState.visualizations.histograms.map((histogram) => (
+                {dashboardState.visualizations?.histograms?.map((histogram) => (
                   <SmartDataBarChart
                     key={histogram.column}
                     title={`Histogram: ${histogram.column}`}
                     description="Distribution of values across backend-generated bins."
                     data={histogram.data}
                   />
-                ))}
+                )) || null}
               </div>
             ) : null}
 
-            {dashboardState.visualizations.correlation_heatmap.length ? (
+            {dashboardState.visualizations?.correlation_heatmap?.length ? (
               <SmartDataHeatmap
                 data={dashboardState.visualizations.correlation_heatmap}
               />
@@ -325,9 +337,9 @@ export function SmartDataAnalyzerDashboard() {
               <EmptyState message="Correlation heatmap is available when at least two numeric columns exist." />
             )}
 
-            {dashboardState.visualizations.categorical_bars.length ? (
+            {dashboardState.visualizations?.categorical_bars?.length ? (
               <div className="grid gap-4 lg:grid-cols-2">
-                {dashboardState.visualizations.categorical_bars.map((chart) => (
+                {dashboardState.visualizations?.categorical_bars?.map((chart) => (
                   <SmartDataBarChart
                     key={chart.column}
                     title={`Category Distribution: ${chart.column}`}
@@ -335,7 +347,7 @@ export function SmartDataAnalyzerDashboard() {
                     data={chart.data}
                     color="#1ef2b1"
                   />
-                ))}
+                )) || null}
               </div>
             ) : null}
           </section>

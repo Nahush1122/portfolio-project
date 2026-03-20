@@ -1,6 +1,14 @@
-import { ProjectLauncherPage } from "@/components/project-launcher-page";
-import { pdfIntelligenceLauncher } from "@/lib/project-launchers";
+import { DashboardShell } from "@/components/dashboard-shell";
+import { PdfIntelligenceDashboard } from "@/components/pdf-intelligence-dashboard";
 
 export default function PdfIntelligencePage() {
-  return <ProjectLauncherPage project={pdfIntelligenceLauncher} />;
+  return (
+    <DashboardShell
+      eyebrow="Document Intelligence"
+      title="PDF Intelligence System"
+      description="An integrated PDF analysis workflow inside the portfolio for uploading documents and generating concise summaries without leaving the dashboard."
+    >
+      <PdfIntelligenceDashboard />
+    </DashboardShell>
+  );
 }
