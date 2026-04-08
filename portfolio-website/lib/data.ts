@@ -50,7 +50,7 @@ export const dashboardTiles = [
     accent: "#ff6b88",
   },
   {
-    href: "https://github.com/Nahush1122",
+    href: "https://github.com/Nahush1122/portfolio-project",
     title: "GitHub",
     description: "Browse repositories, experiments, and technical write-ups from the engineering side.",
     stat: "Public code portfolio",
