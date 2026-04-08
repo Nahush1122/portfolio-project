@@ -73,6 +73,12 @@ def home() -> dict[str, str]:
     return {"status": "API is running"}
 
 
+# ✅ ADD THIS EXACTLY HERE
+@app.get("/health")
+def health_check() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(_, exc: HTTPException) -> JSONResponse:
     return JSONResponse(

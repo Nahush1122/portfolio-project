@@ -86,28 +86,37 @@ export type VisualizationResponse = {
   scatter_relationship: ScatterRelationship;
 };
 
-export async function uploadDataset(file: File): Promise<UploadResponse> {
+export async function uploadDataset(
+  file: File,
+  signal?: AbortSignal,
+): Promise<UploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
 
   return requestJson<UploadResponse>("/upload", {
     method: "POST",
     body: formData,
+    signal,
   });
 }
 
-export async function analyzeDataset(datasetId: string): Promise<AnalysisResponse> {
+export async function analyzeDataset(
+  datasetId: string,
+  signal?: AbortSignal,
+): Promise<AnalysisResponse> {
   return requestJson<AnalysisResponse>("/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ dataset_id: datasetId }),
+    signal,
   });
 }
 
 export async function visualizeDataset(
   datasetId: string,
+  signal?: AbortSignal,
 ): Promise<VisualizationResponse> {
   return requestJson<VisualizationResponse>("/visualize", {
     method: "POST",
@@ -115,6 +124,7 @@ export async function visualizeDataset(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ dataset_id: datasetId }),
+    signal,
   });
 }
 
@@ -127,7 +137,11 @@ async function requestJson<T>(path: string, init: RequestInit): Promise<T> {
 
   try {
     response = await fetch(`${SMART_DATA_ANALYZER_API_BASE_URL}${path}`, init);
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+
     throw new Error("Server not responding");
   }
 

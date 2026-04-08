@@ -11,7 +11,11 @@ export async function requestJson<T>(
 
   try {
     response = await fetch(`${baseUrl}${path}`, init);
-  } catch {
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "AbortError") {
+      throw error;
+    }
+
     throw new Error("Server not responding");
   }
 

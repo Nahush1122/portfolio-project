@@ -1,7 +1,9 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState } from "react";
+import { BackendLoadingCard } from "@/components/backend-loading-card";
 import { MetricCard } from "@/components/metric-card";
+import { ServerWakeControl } from "@/components/server-wake-control";
 import {
   analyzeDataset,
   SMART_DATA_ANALYZER_API_BASE_URL,
@@ -13,6 +15,8 @@ import {
 } from "@/lib/smart-data-analyzer";
 import { SmartDataBarChart } from "@/components/charts/smart-data-bar-chart";
 import { SmartDataHeatmap } from "@/components/charts/smart-data-heatmap";
+import { wakeBackendService } from "@/lib/service-health";
+import { withRequestTimeout } from "@/lib/with-request-timeout";
 
 type DashboardState = {
   datasetId: string;
@@ -26,52 +30,83 @@ export function SmartDataAnalyzerDashboard() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [dashboardState, setDashboardState] = useState<DashboardState | null>(null);
-  const [isPending, startTransition] = useTransition();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isServerReady, setIsServerReady] = useState(false);
+  const [isWakingServer, setIsWakingServer] = useState(false);
+  const [serverStatus, setServerStatus] = useState<string | null>(null);
 
-  const handleUpload = () => {
+  const handleWakeServer = async () => {
+    setServerStatus("Waking server...");
+    setError(null);
+    setIsWakingServer(true);
+
+    try {
+      await wakeBackendService(SMART_DATA_ANALYZER_API_BASE_URL);
+      setIsServerReady(true);
+      setServerStatus("Server is ready");
+    } catch (wakeError) {
+      setIsServerReady(false);
+      setServerStatus(
+        wakeError instanceof Error
+          ? wakeError.message
+          : "Unable to start server. Please try again.",
+      );
+    } finally {
+      setIsWakingServer(false);
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!isServerReady) {
+      setError("Please wake the server before starting analysis.");
+      return;
+    }
+
     if (!selectedFile) {
       setError("Please choose a CSV file before starting the analysis.");
       return;
     }
 
     setError(null);
+    setIsLoading(true);
 
-    startTransition(() => {
-      void (async () => {
-        try {
-          const upload = await uploadDataset(selectedFile);
-          const [analysisResult, visualizations] = await Promise.all([
-            analyzeDataset(upload.dataset_id),
-            visualizeDataset(upload.dataset_id),
-          ]);
+    try {
+      const response = await withRequestTimeout(async (signal) => {
+        const upload = await uploadDataset(selectedFile, signal);
+        const [analysisResult, visualizations] = await Promise.all([
+          analyzeDataset(upload.dataset_id, signal),
+          visualizeDataset(upload.dataset_id, signal),
+        ]);
 
-          const analysis = {
-            ...analysisResult,
-            preview: analysisResult.preview ?? upload.preview,
-          };
+        const analysis = {
+          ...analysisResult,
+          preview: analysisResult.preview ?? upload.preview,
+        };
 
-          setDashboardState({
-            datasetId: upload.dataset_id,
-            filename: upload.filename,
-            preview: upload.preview,
-            analysis,
-            visualizations,
-          });
-        } catch (uploadError) {
-          setDashboardState(null);
-          setError(
-            uploadError instanceof Error
-              ? uploadError.message
-              : "Something went wrong while processing the dataset.",
-          );
-        }
-      })();
-    });
+        return {
+          datasetId: upload.dataset_id,
+          filename: upload.filename,
+          preview: upload.preview,
+          analysis,
+          visualizations,
+        };
+      });
+
+      setDashboardState(response);
+    } catch (uploadError) {
+      setDashboardState(null);
+      setError(
+        uploadError instanceof Error
+          ? uploadError.message
+          : "Something went wrong while processing the dataset.",
+      );
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
     <div className="space-y-4">
-      {/* Project header and backend connection status */}
       <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
         <div className="glass-panel rounded-[28px] p-6">
           <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/80">
@@ -104,7 +139,6 @@ export function SmartDataAnalyzerDashboard() {
         </div>
       </section>
 
-      {/* Upload controls */}
       <section className="glass-panel rounded-[28px] p-6">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
           <div>
@@ -115,7 +149,7 @@ export function SmartDataAnalyzerDashboard() {
               Analyze a dataset from the portfolio
             </h3>
             <p className="mt-2 text-sm leading-7 text-slate-400">
-              Choose a CSV file, upload it to the FastAPI service, and populate the
+              Wake the server once, then upload a CSV file and populate the
               analytics panels below.
             </p>
           </div>
@@ -127,14 +161,22 @@ export function SmartDataAnalyzerDashboard() {
               onChange={(event) => setSelectedFile(event.target.files?.[0] ?? null)}
               className="rounded-[18px] border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-200 file:mr-4 file:rounded-full file:border-0 file:bg-cyan-300 file:px-4 file:py-2 file:text-sm file:font-medium file:text-slate-950"
             />
-            <button
-              type="button"
-              onClick={handleUpload}
-              disabled={isPending}
-              className="rounded-full bg-cyan-300 px-5 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-200 disabled:cursor-not-allowed disabled:bg-cyan-300/60"
-            >
-              {isPending ? "Analyzing dataset..." : "Upload and Analyze"}
-            </button>
+            <div className="flex flex-wrap gap-3">
+              <button
+                type="button"
+                onClick={handleUpload}
+                disabled={isLoading || isWakingServer || !isServerReady}
+                className="rounded-full bg-gradient-to-r from-emerald-300 to-cyan-300 px-5 py-3 text-sm font-medium text-slate-950 shadow-[0_0_24px_rgba(97,195,255,0.2)] transition duration-300 ease-in-out hover:scale-105 hover:from-emerald-200 hover:to-cyan-200 hover:shadow-[0_0_28px_rgba(97,195,255,0.32)] disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {isLoading ? "Analyzing dataset..." : "Upload and Analyze"}
+              </button>
+              <ServerWakeControl
+                isReady={isServerReady}
+                isWaking={isWakingServer}
+                statusMessage={serverStatus}
+                onWake={handleWakeServer}
+              />
+            </div>
           </div>
         </div>
 
@@ -151,16 +193,34 @@ export function SmartDataAnalyzerDashboard() {
         ) : null}
       </section>
 
+      {isWakingServer ? (
+        <BackendLoadingCard
+          title="Preparing analytics service"
+          steps={[
+            "Waking up server...",
+            "Initializing backend services...",
+            "Connecting to server...",
+            "Preparing analysis engine...",
+            "Almost ready...",
+            "Still working, thanks for your patience...",
+          ]}
+          loopSteps
+          showReassurance
+        />
+      ) : null}
+
+      {isLoading ? (
+        <BackendLoadingCard title="Preparing analytics workflow" />
+      ) : null}
+
       {dashboardState ? (
         <>
-          {/* Dataset preview cards */}
           <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             <MetricCard label="Dataset" value={dashboardState.filename} hint="Uploaded CSV" />
             <MetricCard
               label="Rows"
               value={
-                dashboardState.analysis?.preview?.shape?.rows?.toLocaleString() ||
-                "0"
+                dashboardState.analysis?.preview?.shape?.rows?.toLocaleString() || "0"
               }
               hint="Parsed successfully"
               tone="success"
@@ -168,8 +228,7 @@ export function SmartDataAnalyzerDashboard() {
             <MetricCard
               label="Columns"
               value={
-                dashboardState.analysis?.preview?.shape?.columns?.toString() ||
-                "0"
+                dashboardState.analysis?.preview?.shape?.columns?.toString() || "0"
               }
               hint="Detected fields"
             />
@@ -181,7 +240,6 @@ export function SmartDataAnalyzerDashboard() {
             />
           </section>
 
-          {/* Dataset preview table */}
           <section className="glass-panel rounded-[28px] p-6">
             <div className="flex items-center justify-between gap-4">
               <div>
@@ -225,7 +283,6 @@ export function SmartDataAnalyzerDashboard() {
             </div>
           </section>
 
-          {/* Analysis result tables */}
           <section className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
             <div className="glass-panel rounded-[28px] p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-cyan-200/80">
@@ -314,7 +371,6 @@ export function SmartDataAnalyzerDashboard() {
             </div>
           </section>
 
-          {/* Chart section */}
           <section className="grid gap-4">
             {dashboardState.visualizations?.histograms?.length ? (
               <div className="grid gap-4 lg:grid-cols-2">

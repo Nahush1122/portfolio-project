@@ -20,22 +20,30 @@ export type ResumeAnalyzeResponse = {
   override_applied: boolean;
 };
 
-export async function uploadResume(file: File): Promise<ResumeUploadResponse> {
+export async function uploadResume(
+  file: File,
+  signal?: AbortSignal,
+): Promise<ResumeUploadResponse> {
   const formData = new FormData();
   formData.append("file", file);
 
   return requestJson<ResumeUploadResponse>(RESUME_ANALYZER_API_URL, "/upload", {
     method: "POST",
     body: formData,
+    signal,
   });
 }
 
-export async function analyzeResume(text: string): Promise<ResumeAnalyzeResponse> {
+export async function analyzeResume(
+  text: string,
+  signal?: AbortSignal,
+): Promise<ResumeAnalyzeResponse> {
   return requestJson<ResumeAnalyzeResponse>(RESUME_ANALYZER_API_URL, "/analyze", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ text }),
+    signal,
   });
 }

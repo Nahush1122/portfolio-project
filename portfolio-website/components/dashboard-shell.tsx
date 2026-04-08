@@ -5,6 +5,9 @@ type DashboardShellProps = {
   eyebrow: string;
   description: string;
   children: React.ReactNode;
+  centered?: boolean;
+  headerBadges?: string[];
+  headerContent?: React.ReactNode;
 };
 
 const navigation = [
@@ -22,13 +25,26 @@ export function DashboardShell({
   eyebrow,
   description,
   children,
+  centered = false,
+  headerBadges = [],
+  headerContent,
 }: DashboardShellProps) {
   return (
     <main className="relative min-h-screen overflow-hidden px-4 py-6 sm:px-6 lg:px-8">
       <div className="mx-auto flex w-full max-w-7xl flex-col gap-6">
         <header className="glass-panel rounded-[28px] px-6 py-5">
-          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-3">
+          <div
+            className={`flex flex-col gap-5 ${
+              centered
+                ? "items-center"
+                : "lg:flex-row lg:items-end lg:justify-between"
+            }`}
+          >
+            <div
+              className={`space-y-3 ${
+                centered ? "w-full text-center lg:text-center" : ""
+              }`}
+            >
               <p className="text-xs font-semibold uppercase tracking-[0.32em] text-cyan-200/75">
                 {eyebrow}
               </p>
@@ -36,13 +52,38 @@ export function DashboardShell({
                 <h1 className="text-balance text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                   {title}
                 </h1>
-                <p className="max-w-3xl text-sm leading-7 text-slate-300 sm:text-base">
+                <p
+                  className={`text-sm leading-7 text-slate-300 sm:text-base ${
+                    centered ? "mx-auto max-w-4xl" : "max-w-3xl"
+                  }`}
+                >
                   {description}
                 </p>
               </div>
+              {headerBadges.length ? (
+                <div
+                  className={`flex flex-wrap gap-2 pt-2 ${
+                    centered ? "justify-center" : ""
+                  }`}
+                >
+                  {headerBadges.map((badge) => (
+                    <span
+                      key={badge}
+                      className="rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200"
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
+              ) : null}
+              {headerContent ? <div className="pt-2">{headerContent}</div> : null}
             </div>
 
-            <nav className="flex flex-wrap gap-2">
+            <nav
+              className={`flex flex-wrap gap-2 ${
+                centered ? "justify-center" : ""
+              }`}
+            >
               {navigation.map((item) => (
                 <Link
                   key={item.href}

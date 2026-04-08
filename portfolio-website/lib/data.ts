@@ -3,6 +3,11 @@ export type Project = {
   title: string;
   category: string;
   shortDescription: string;
+  whyItMatters: string;
+  cardProblem: string;
+  cardImpact: string[];
+  cardOutput: string[];
+  cardTags: string[];
   overview: string;
   problemStatement: string;
   architecture: string[];
@@ -118,6 +123,16 @@ export const projects: Project[] = [
     category: "Predictive Analytics",
     shortDescription:
       "An HR analytics platform that predicts churn risk, explains drivers, and supports retention planning.",
+    whyItMatters:
+      "Helps organizations reduce employee churn and improve retention.",
+    cardProblem:
+      "Employee attrition is hard to predict and impacts business continuity.",
+    cardImpact: [
+      "Enables proactive retention strategies with ~70% attrition prediction accuracy",
+      "Helps HR identify high-risk employees",
+    ],
+    cardOutput: ["Attrition prediction", "Key driver insights"],
+    cardTags: ["Predictive ML", "HR Analytics", "Classification"],
     overview:
       "This solution combines data ingestion, feature engineering, model training, and a business-facing dashboard to help HR teams understand which employees are most at risk of attrition and why.",
     problemStatement:
@@ -127,7 +142,7 @@ export const projects: Project[] = [
       "Transform raw fields into workforce health indicators and feed them into classification pipelines.",
       "Expose risk scores, trend slices, and explainability outputs through a dashboard for HR leadership.",
     ],
-    technologies: ["Python", "Scikit-learn", "Pandas", "Power BI", "SQL", "FastAPI"],
+    technologies: ["Python", "Scikit-learn"],
     demoHighlights: [
       "Risk segmentation by department and tenure band",
       "Feature importance and SHAP-inspired explanation views",
@@ -148,6 +163,14 @@ export const projects: Project[] = [
     category: "Analytics Automation",
     shortDescription:
       "A self-service analytics assistant that profiles datasets, surfaces trends, and generates quick business summaries.",
+    whyItMatters: "Enables faster decision-making from raw datasets.",
+    cardProblem: "Manual data analysis is time-consuming.",
+    cardImpact: [
+      "Reduces analysis time by ~60%",
+      "Processes datasets in seconds",
+    ],
+    cardOutput: ["Dataset profiling", "Trend detection", "Summaries"],
+    cardTags: ["Data Analysis", "Automation", "Business Insights"],
     overview:
       "Smart Data Analyzer helps teams upload structured datasets and immediately get descriptive stats, anomaly signals, charts, and short AI-generated summaries for faster insight generation.",
     problemStatement:
@@ -157,7 +180,7 @@ export const projects: Project[] = [
       "Generate exploratory statistics, trend summaries, and visualization suggestions automatically.",
       "Present outputs in a browser dashboard with exportable summaries and reusable templates.",
     ],
-    technologies: ["Next.js", "Python", "Pandas", "OpenAI API", "Tailwind CSS", "Plotly"],
+    technologies: ["Python", "Pandas"],
     demoHighlights: [
       "Automated schema profiling and null-pattern detection",
       "One-click summary generation for stakeholder sharing",
@@ -178,6 +201,15 @@ export const projects: Project[] = [
     category: "Document Intelligence",
     shortDescription:
       "A document-intelligence application for uploading PDFs, extracting knowledge, and generating summaries, topics, and grounded answers.",
+    whyItMatters:
+      "Automates extraction of insights from unstructured documents.",
+    cardProblem: "Manual PDF analysis is inefficient.",
+    cardImpact: [
+      "Handles multi-page documents efficiently",
+      "Converts unstructured data into structured insights",
+    ],
+    cardOutput: ["Summaries", "Topics", "Answers"],
+    cardTags: ["NLP", "Document AI", "Automation"],
     overview:
       "The platform turns dense PDF files into searchable chunks, semantic summaries, and task-ready outputs for research, compliance, and internal operations teams.",
     problemStatement:
@@ -187,7 +219,7 @@ export const projects: Project[] = [
       "Create embeddings and searchable indexes for semantic retrieval and document QA.",
       "Render summary views, extracted entities, and highlighted source passages inside the UI.",
     ],
-    technologies: ["Python", "LangChain", "FAISS", "OCR", "FastAPI", "React"],
+    technologies: ["Python", "NLP"],
     demoHighlights: [
       "Semantic question answering over document collections",
       "Entity extraction for compliance and auditing workflows",
@@ -208,6 +240,15 @@ export const projects: Project[] = [
     category: "HR Tech",
     shortDescription:
       "A resume analysis application that extracts skills, estimates experience, scores resumes, and generates candidate summaries.",
+    whyItMatters:
+      "Improves hiring efficiency through automated resume analysis.",
+    cardProblem: "Manual screening is slow.",
+    cardImpact: [
+      "Speeds up resume screening process",
+      "Extracts candidate insights automatically",
+    ],
+    cardOutput: ["Skills extraction", "Resume scoring"],
+    cardTags: ["NLP", "Recruitment", "Automation"],
     overview:
       "Resume Analyzer processes candidate resumes, detects core skills, experience bands, and project relevance, then scores fit against job descriptions to help recruiters shortlist faster.",
     problemStatement:
@@ -217,7 +258,7 @@ export const projects: Project[] = [
       "Extract skill entities, achievements, and experience signals using NLP heuristics and embeddings.",
       "Display fit scores, missing skill gaps, and profile summaries inside a recruiter-facing dashboard.",
     ],
-    technologies: ["Python", "spaCy", "NLP", "React", "Node.js", "MongoDB"],
+    technologies: ["Python", "NLP"],
     demoHighlights: [
       "JD-to-resume matching scores with explainable reasons",
       "Candidate skill heatmaps and gap analysis",

@@ -19,7 +19,7 @@ export default function ResumePage() {
           </p>
 
           <Link
-            href="/resume.pdf"
+            href="https://drive.google.com/file/d/1yXJ8KqsmZFyBnYuBcy0YnuEXbB9NA1jD/view?usp=sharing"
             className="mt-6 inline-flex rounded-full bg-cyan-300 px-5 py-3 text-sm font-medium text-slate-950 transition hover:bg-cyan-200"
           >
             Download Resume PDF
