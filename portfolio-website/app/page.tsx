@@ -13,7 +13,7 @@ const proofPoints = [
 export default function HomePage() {
   return (
     <DashboardShell
-      eyebrow="Recruiter-ready portfolio"
+      eyebrow="Nahush Hirolikar portfolio"
       title="AI/ML Engineer | Data Scientist | Data Analyst"
       description="I build data-driven systems that predict outcomes, uncover insights, and enable intelligent decision-making across business workflows."
       centered
