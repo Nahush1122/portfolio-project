@@ -36,7 +36,7 @@ Some platforms do not allow direct portfolio links, so this repository serves as
 ## 📬 Contact
 
 * 📧 Email: [nahush.nsh@gmail.com](mailto:nahush.nsh@gmail.com)
-* 💼 LinkedIn: https://linkedin.com/in/your-link
+* 💼 LinkedIn: [Nahush Hirolikar](https://www.linkedin.com/in/nahush-hirolikar-14023538a/)
 * 💻 GitHub: https://github.com/Nahush1122
 
 ---
