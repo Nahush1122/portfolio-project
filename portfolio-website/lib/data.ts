@@ -119,7 +119,7 @@ export const resumeData = {
 export const projects: Project[] = [
   {
     slug: "employee-attrition-intelligence-system",
-    title: "Employee Attrition Intelligence System",
+    title: "Employee Attrition Prediction using Machine Learning",
     category: "Predictive Analytics",
     shortDescription:
       "An HR analytics platform that predicts churn risk, explains drivers, and supports retention planning.",
