@@ -15,7 +15,7 @@ export default function EmployeeAttritionIntelligenceSystemPage() {
   return (
     <DashboardShell
       eyebrow="ML Case Study"
-      title="Employee Attrition Intelligence System"
+      title="Employee Attrition Prediction using Machine Learning"
       description="A machine learning case study built during an internship at Bajaj Auto Limited to predict employee attrition risk and uncover the signals most associated with employee exits."
     >
       {/* Project header */}
@@ -25,7 +25,7 @@ export default function EmployeeAttritionIntelligenceSystemPage() {
             Project Header
           </p>
           <h2 className="mt-4 text-3xl font-semibold text-white">
-            Employee Attrition Intelligence System
+            Employee Attrition Prediction using Machine Learning
           </h2>
           <p className="mt-3 text-sm leading-7 text-slate-300">
             Developed during an internship at Bajaj Auto Limited, this project
