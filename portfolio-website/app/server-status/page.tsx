@@ -7,8 +7,8 @@ export default function ServerStatusPage() {
   return (
     <DashboardShell
       eyebrow="Server Status"
-      title="Operational telemetry for portfolio infrastructure."
-      description="These values are mocked for now, but the layout is ready to connect to a monitoring API or status endpoint later."
+      title="My Server is crashed so i have shifted to render so server status will be not avilable for now"
+      description="I am fixing all issues from my side till then you can explore all details"
     >
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <MetricCard label="Status" value={serverStatus.status} hint="Last checked moments ago" tone="success" />
