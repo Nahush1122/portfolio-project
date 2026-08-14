@@ -42,7 +42,7 @@ export default function HomePage() {
               View Projects
             </Link>
             <Link
-              href="https://drive.google.com/file/d/1yXJ8KqsmZFyBnYuBcy0YnuEXbB9NA1jD/view?usp=sharing"
+              href="https://drive.google.com/file/d/1PdWRvub1CwhU-0JOqHRb5RyN3CcCfDHp/view?usp=sharing"
               target="_blank"
               className="rounded-full border border-white/15 bg-white/5 px-5 py-3 text-sm font-medium text-white transition duration-300 ease-in-out hover:scale-105 hover:border-cyan-300/40 hover:bg-cyan-300/10 hover:shadow-[0_0_24px_rgba(97,195,255,0.18)]"
             >
