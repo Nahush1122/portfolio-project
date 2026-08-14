@@ -332,14 +332,14 @@ export const aiTools = [
 ];
 
 export const serverStatus = {
-  status: "Operational",
-  uptime: "99.98%",
-  cpuUsage: "42%",
-  memoryUsage: "68%",
+  status: "Not Operational",
+  uptime: "0",
+  cpuUsage: "0",
+  memoryUsage: "0",
   chartData: [
-    { metric: "CPU", value: 42 },
-    { metric: "Memory", value: 68 },
-    { metric: "Disk", value: 57 },
-    { metric: "Network", value: 34 },
+    { metric: "CPU", value: 0 },
+    { metric: "Memory", value: 0 },
+    { metric: "Disk", value: 0 },
+    { metric: "Network", value: 0 },
   ],
 };
