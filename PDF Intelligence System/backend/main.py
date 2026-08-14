@@ -81,6 +81,11 @@ def home() -> dict[str, str]:
     return {"status": "API is running"}
 
 
+@app.get("/ping")
+def ping() -> dict[str, str]:
+    return {"status": "ok"}
+
+
 @app.get("/health")
 def health_check() -> dict[str, str]:
     return {"status": "ok"}
