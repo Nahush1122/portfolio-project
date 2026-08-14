@@ -73,7 +73,7 @@ def home() -> dict[str, str]:
     return {"status": "API is running"}
 
 
-# ✅ ADD THIS EXACTLY HERE
+
 @app.get("/")
 def home() -> dict[str, str]:
     return {"status": "API is running"}
